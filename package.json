@@ -1,0 +1,14 @@
+{
+  "name": "bff-pl",
+  "version": "1.0.0",
+  "description": "## 项目介绍 本项目是为了预演bff的框架，探究bff在实际项目中的可行性。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "baseService": "node ./baseService/index.js",
+    "bffService": "node ./bffService/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
