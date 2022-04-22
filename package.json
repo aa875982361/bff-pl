@@ -4,11 +4,17 @@
   "description": "## 项目介绍 本项目是为了预演bff的框架，探究bff在实际项目中的可行性。",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ts-node ./test/cliendSendReq.ts",
+    "baseServiceRpc": "ts-node ./src/baseServiceRpc/index.ts",
+    "bffServiceRpc": "ts-node ./src/bffServiceRpc/index.ts",
     "baseService": "node ./baseService/index.js",
     "bffService": "node ./bffService/index.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.25",
+    "request": "^2.88.2"
+  }
 }
