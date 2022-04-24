@@ -17,5 +17,5 @@ request({
         console.log("err", err);
         return
     }
-    console.log("res", response, body)
+    console.log("res", response.statusCode, body)
 })
