@@ -116,11 +116,20 @@ export function decodeBuff(buff: Buffer): RequestOrResponseControl{
     // 输出body内容
     // console.log("bodyBuff", bodyBuff);
     // console.log("bodyBuffStr", bodyBuff.toString());
-    
+    const bodyStr = bodyBuff.toString()
+    let bodyObj = {
+        method: "unknow",
+    }
+    try {
+        bodyObj = JSON.parse(bodyStr)
+    } catch (error) {
+        console.error("转换json失败", bodyStr);
+        throw new Error("转换json失败:" + bodyStr)
+    }
     return {
         requestId,
         requestType,
-        body: JSON.parse(bodyBuff.toString()),
+        body: bodyObj,
         timeOut
     }
 }
