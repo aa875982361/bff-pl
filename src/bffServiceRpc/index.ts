@@ -54,7 +54,10 @@ import { createServer, IncomingMessage, ServerResponse } from "http"
              data
          );
          console.log("dataResult", dataResult, dataCode)
-         res.end(JSON.stringify({ orderResult, dataResult }));
+         res.end(JSON.stringify({
+             code: 200,
+             data: { orderResult, dataResult }
+         }));
      });
  }
  
@@ -63,11 +66,15 @@ import { createServer, IncomingMessage, ServerResponse } from "http"
      // 处理port
      console.log("开始处理", port, data);
      return new Promise((resolve) => {
+         function callback(res: ResponseBody){
+             console.log("处理完成", port, data);
+            resolve(res)
+         }
          // 发送数据
          sendDataToService(port, {
              method,
              data
-         }, resolve)
+         }, callback)
      });
  }
  
