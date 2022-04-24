@@ -27,9 +27,13 @@ let requestId = 1000
  */
 function createClient(port: number): Socket{
     // 判断是否有缓存
-    if(clientMap[port]){
+    // 需要判断是否还在连接
+    const cacheClient = clientMap[port]
+    if(cacheClient && cacheClient.readyState !== "closed"){
         return clientMap[port]
     }
+    console.log("新起一个链接", port);
+    
     const client = createConnection(port)
     clientMap[port] = client
     client.on("connect", () => {
@@ -59,6 +63,11 @@ function createClient(port: number): Socket{
         }else{
             console.error("非法请求类型")
         }
+    })
+
+    client.on("close", () => {
+        console.log("client closed", port);
+        delete clientMap[port]
     })
     // 定时发送心跳保活
     return client
