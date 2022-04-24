@@ -4,6 +4,7 @@
 
 import { createConnection, Socket } from "net";
 import { decodeBuff, encodeBuff, ResponseBody, RequestBody, RequsetType } from "../utils/buffHandler";
+import { handleStickPackage } from "../utils/buffSplit";
 
 /**
  * 客户端连接缓存
@@ -37,32 +38,35 @@ function createClient(port: number): Socket{
     const client = createConnection(port)
     clientMap[port] = client
     client.on("connect", () => {
-        console.log("client connect");
+        console.log("client connect", port);
     })
     
     client.on("data", (data) => {
-        // 反序列化数据
-        const result = decodeBuff(data)
-        if(result.requestType === RequsetType.RESPONSE){
-            // 返回数据
-            // 找到请求id对应的callback运行
-            const requestId = result.requestId
-            // 查找回调
-            const callback = eventMap[requestId]
-            // 检查是否存在回调
-            if(callback && typeof callback === "function"){
-                // 触发回调
-                callback(result.body)
-                // 运行完就可以解除关系
-                delete eventMap[requestId]
+        // 这里也会有数据粘包问题
+        handleStickPackage(data, (onePacakgeBuff: Buffer) => {
+            // 反序列化数据
+            const result = decodeBuff(onePacakgeBuff)
+            if(result.requestType === RequsetType.RESPONSE){
+                // 返回数据
+                // 找到请求id对应的callback运行
+                const requestId = result.requestId
+                // 查找回调
+                const callback = eventMap[requestId]
+                // 检查是否存在回调
+                if(callback && typeof callback === "function"){
+                    // 触发回调
+                    callback(result.body)
+                    // 运行完就可以解除关系
+                    delete eventMap[requestId]
+                }
+            }else if(result.requestType === RequsetType.REQUEST){
+                // 服务端向客户端发送请求
+                console.log("服务端发送的请求");
+                
+            }else{
+                console.error("非法请求类型")
             }
-        }else if(result.requestType === RequsetType.REQUEST){
-            // 服务端向客户端发送请求
-            console.log("服务端发送的请求");
-            
-        }else{
-            console.error("非法请求类型")
-        }
+        })
     })
 
     client.on("close", () => {
@@ -93,6 +97,7 @@ export function sendDataToService(port: number, body: RequestBody, callback: (re
     })
     // 绑定回调到当前的请求id
     eventMap[currentRequestId] = callback
+    console.log("调用客户端连接发送数据", port, currentRequestId);
     // 发送数据
     client.write(sendBuff)
 }
