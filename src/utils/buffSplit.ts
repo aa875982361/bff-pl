@@ -12,7 +12,7 @@ export function handleStickPackage(dataBuffer: Buffer, callback: (onePackageBuff
     // 先判空
     while(dataBuffer.length > 0){
         // 粘包问题 先读取10位 然后读取数据长度的大小, 然后再处理
-        console.log("dataBuffLength", dataBuffer.length);
+        // console.log("dataBuffLength", dataBuffer.length);
         const dataBuffLength = dataBuffer.length
         // 数据包的传输数据长度
         const packageBodyLength = dataBuffer.readInt32BE(5)
@@ -24,14 +24,14 @@ export function handleStickPackage(dataBuffer: Buffer, callback: (onePackageBuff
             break
         }
         // 截取数据包
-        console.log("packageLength", packageLength);
+        // console.log("packageLength", packageLength);
         
         const packageData = dataBuffer.slice(0, packageLength)
         // 调用数据包的处理
         callback(packageData)
         // 延长下一段
         dataBuffer = dataBuffer.slice(packageLength)
-        console.log("dataBufferLength", dataBuffer.length);
+        // console.log("dataBufferLength", dataBuffer.length);
     }
     return dataBuffer
 }
