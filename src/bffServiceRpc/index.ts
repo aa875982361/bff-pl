@@ -59,16 +59,9 @@ app.listen(port, () => {
  async function publicRequest(port: number, method: string, data: any): Promise<ResponseBody> {
      // 处理port
     //  console.log("开始处理", port, data);
-     return new Promise((resolve) => {
-         function callback(res: ResponseBody){
-            //  console.log("处理完成", port, data);
-            resolve(res)
-         }
-         // 发送数据
-         sendDataToService(port, {
-             method,
-             data
-         }, callback)
-     });
+     return sendDataToService(port, {
+        method,
+        data
+    })
  }
  
