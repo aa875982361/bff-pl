@@ -46,7 +46,7 @@ var createClient_1 = require("./createClient");
 var express_1 = __importDefault(require("express"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var port = "8081";
-var app = express_1.default();
+var app = (0, express_1.default)();
 // 唯一请求id
 var requestBffId = 1000;
 // 解析body的数据
@@ -109,7 +109,7 @@ function publicRequest(port, method, data) {
         return __generator(this, function (_a) {
             // 处理port
             //  console.log("开始处理", port, data);
-            return [2 /*return*/, createClient_1.sendDataToService(port, {
+            return [2 /*return*/, (0, createClient_1.sendDataToService)(port, {
                     method: method,
                     data: data
                 })];

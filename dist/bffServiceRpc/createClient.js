@@ -46,7 +46,7 @@ var buffSplit_1 = require("../utils/buffSplit");
 /**
  * 客户端连接缓存
  */
-var clientMap = {};
+var clientMap = new Map();
 /**
  * 事件列表
  */
@@ -66,11 +66,11 @@ function createClient(port) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!clientMap[port]) return [3 /*break*/, 2];
-                    return [4 /*yield*/, clientMap[port]];
+                    if (!clientMap.has(port)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, clientMap.get(port)];
                 case 1:
                     cacheClient = _a.sent();
-                    if (cacheClient.readyState !== "closed") {
+                    if (cacheClient && cacheClient.readyState !== "closed") {
                         // 存在缓存
                         return [2 /*return*/, cacheClient];
                     }
@@ -78,8 +78,8 @@ function createClient(port) {
                 case 2:
                     console.log("新起一个链接", port);
                     // 设置缓存 等待连接成功
-                    clientMap[port] = new Promise(function (resolve, reject) {
-                        var client = net_1.createConnection(port);
+                    cacheClient = new Promise(function (resolve, reject) {
+                        var client = (0, net_1.createConnection)(port);
                         client.on("connect", function () {
                             console.log("client connect", port);
                             resolve(client);
@@ -90,11 +90,11 @@ function createClient(port) {
                             // 拼接上次未处理
                             data = Buffer.concat([preBuffer, data]);
                             // 这里也会有数据粘包问题
-                            preBuffer = buffSplit_1.handleStickPackage(data, function (onePacakgeBuff) {
+                            preBuffer = (0, buffSplit_1.handleStickPackage)(data, function (onePacakgeBuff) {
                                 var result;
                                 try {
                                     // 反序列化数据
-                                    result = buffHandler_1.decodeBuff(onePacakgeBuff);
+                                    result = (0, buffHandler_1.decodeBuff)(onePacakgeBuff);
                                 }
                                 catch (error) {
                                     console.log("解析数据包失败，跳过", error);
@@ -129,10 +129,11 @@ function createClient(port) {
                         });
                         client.on("close", function () {
                             console.log("client closed", port);
-                            delete clientMap[port];
+                            clientMap.delete(port);
                         });
                     });
-                    return [2 /*return*/, clientMap[port]];
+                    clientMap.set(port, cacheClient);
+                    return [2 /*return*/, cacheClient];
             }
         });
     });
@@ -154,7 +155,7 @@ function sendDataToService(port, body) {
                 case 1:
                     client = _a.sent();
                     currentRequestId = requestId++;
-                    sendBuff = buffHandler_1.encodeBuff({
+                    sendBuff = (0, buffHandler_1.encodeBuff)({
                         requestType: buffHandler_1.RequsetType.REQUEST,
                         requestId: currentRequestId,
                         body: body,

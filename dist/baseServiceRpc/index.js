@@ -7,11 +7,11 @@ var createServices_1 = require("./createServices");
 /**
  * 订单服务
  */
-var orderService = createServices_1.createServices(4444, handleOrderRequest);
+var orderService = (0, createServices_1.createServices)(4444, handleOrderRequest);
 /**
  * 数据服务
  */
-var dataService = createServices_1.createServices(4445, handleDataRequest);
+var dataService = (0, createServices_1.createServices)(4445, handleDataRequest);
 /**
  * 处理订单相关的请求
  * @param requestBody

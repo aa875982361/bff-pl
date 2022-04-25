@@ -18,7 +18,7 @@ var packageHeadLength = 10;
  * @returns 服务
  */
 function createServices(port, callback) {
-    var services = net_1.createServer(function (socket) {
+    var services = (0, net_1.createServer)(function (socket) {
         // 上次未处理buffer
         var preBuffer = Buffer.alloc(0);
         // 连接
@@ -33,7 +33,7 @@ function createServices(port, callback) {
         socket.on("data", function (data) {
             data = Buffer.concat([preBuffer, data]);
             // 处理粘包问题
-            preBuffer = buffSplit_1.handleStickPackage(data, function (onePackageBuff) {
+            preBuffer = (0, buffSplit_1.handleStickPackage)(data, function (onePackageBuff) {
                 // 单独处理一个数据包
                 handleOneDataPackages(onePackageBuff, socket, callback);
             });
@@ -65,7 +65,7 @@ function handleOneDataPackages(data, socket, callback) {
     var result;
     try {
         // 解密数据
-        result = buffHandler_1.decodeBuff(data);
+        result = (0, buffHandler_1.decodeBuff)(data);
     }
     catch (error) {
         console.log("反序列化buff失败", error);
@@ -82,7 +82,7 @@ function handleOneDataPackages(data, socket, callback) {
         console.log('server receive data', result.requestId);
         var resData = callback(result.body);
         // 构建返回帧
-        var responResultBuff = buffHandler_1.encodeBuff({
+        var responResultBuff = (0, buffHandler_1.encodeBuff)({
             requestType: buffHandler_1.RequsetType.RESPONSE,
             requestId: result.requestId,
             body: resData
