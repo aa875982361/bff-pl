@@ -9,8 +9,7 @@ import { handleStickPackage } from "../utils/buffSplit";
 /**
  * 客户端连接缓存
  */
-const clientMap: Record<string, Promise<Socket>> = {
-}
+const clientMap: Map<number, Promise<Socket>> = new Map<number, Promise<Socket>>()
 /**
  * 事件列表
  */
@@ -28,17 +27,18 @@ let requestId = 1000
  */
 async function createClient(port: number): Promise<Socket>{
     // 判断是否有缓存
+    let cacheClient
     // 需要判断是否还在连接
-    if(clientMap[port]){
-        const cacheClient = await clientMap[port]
-        if(cacheClient.readyState !== "closed"){
+    if(clientMap.has(port)){
+        cacheClient = await clientMap.get(port)
+        if(cacheClient && cacheClient.readyState !== "closed"){
             // 存在缓存
             return cacheClient
         }
     }
     console.log("新起一个链接", port);
     // 设置缓存 等待连接成功
-    clientMap[port] = new Promise<Socket>((resolve, reject) => {
+    cacheClient = new Promise<Socket>((resolve, reject) => {
         const client = createConnection(port)
         client.on("connect", () => {
             console.log("client connect", port);
@@ -91,10 +91,11 @@ async function createClient(port: number): Promise<Socket>{
     
         client.on("close", () => {
             console.log("client closed", port);
-            delete clientMap[port]
+            clientMap.delete(port)
         })
     })
-    return clientMap[port]
+    clientMap.set(port, cacheClient)
+    return cacheClient
     
 }
 
