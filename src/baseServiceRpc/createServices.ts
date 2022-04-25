@@ -19,14 +19,17 @@ import { handleStickPackage } from '../utils/buffSplit';
   */
  export function createServices(port: number, callback: (requestBody: RequestBody) => ResponseBody): Server{
     const services = createServer((socket: Socket) => {
+        // 上次未处理buffer
+        let preBuffer:Buffer = Buffer.alloc(0)
         // 连接
         socket.on("connect", (...args) => {
             console.log("connect", port, args);
         })
         // 事件
         socket.on("data", (data:Buffer) => {
+            data = Buffer.concat([preBuffer, data])
             // 处理粘包问题
-            handleStickPackage(data, (onePackageBuff: Buffer) => {
+            preBuffer = handleStickPackage(data, (onePackageBuff: Buffer) => {
                 // 单独处理一个数据包
                 handleOneDataPackages(onePackageBuff, socket, callback)
             })
