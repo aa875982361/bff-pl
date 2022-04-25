@@ -103,7 +103,7 @@ export function encodeBuff(requestControl: RequestOrResponseControl): Buffer {
  */
 export function decodeBuff(buff: Buffer): RequestOrResponseControl{
     // 按照协议取值
-    console.log("decodeBuff", buff.length);
+    // console.log("decodeBuff", buff.length);
     if(buff.length < 10){
         throw new Error("decodeBuff length small")
     }
