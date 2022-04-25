@@ -103,6 +103,10 @@ export function encodeBuff(requestControl: RequestOrResponseControl): Buffer {
  */
 export function decodeBuff(buff: Buffer): RequestOrResponseControl{
     // 按照协议取值
+    console.log("decodeBuff", buff.length);
+    if(buff.length < 10){
+        throw new Error("decodeBuff length small")
+    }
     // 请求类型
     const requestType = buff[0]
     // 请求id
@@ -111,8 +115,14 @@ export function decodeBuff(buff: Buffer): RequestOrResponseControl{
     const bodyLength = buff.readInt32BE(5)
     // 超时时间
     const timeOut = buff[9]
-    // body数据内容
-    const bodyBuff = buff.slice(10, 10 + bodyLength)
+    let bodyBuff:Buffer
+    try {
+        // body数据内容
+        bodyBuff = buff.slice(10, 10 + bodyLength)
+    } catch (error) {
+        console.log("分割body数据失败", error);
+        throw new Error("分割body数据失败")
+    }
     // 输出body内容
     // console.log("bodyBuff", bodyBuff);
     // console.log("bodyBuffStr", bodyBuff.toString());
