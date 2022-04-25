@@ -44,8 +44,14 @@ function createClient(port: number): Socket{
     client.on("data", (data) => {
         // 这里也会有数据粘包问题
         handleStickPackage(data, (onePacakgeBuff: Buffer) => {
-            // 反序列化数据
-            const result = decodeBuff(onePacakgeBuff)
+            let result
+            try {
+                // 反序列化数据
+                result = decodeBuff(onePacakgeBuff)
+            } catch (error) {
+                console.log("解析数据包失败，跳过", error)
+                return
+            }
             if(result.requestType === RequsetType.RESPONSE){
                 // 返回数据
                 // 找到请求id对应的callback运行
@@ -97,7 +103,7 @@ export function sendDataToService(port: number, body: RequestBody, callback: (re
     })
     // 绑定回调到当前的请求id
     eventMap[currentRequestId] = callback
-    console.log("调用客户端连接发送数据", port, currentRequestId);
+    // console.log("调用客户端连接发送数据", port, currentRequestId);
     // 发送数据
     client.write(sendBuff)
 }

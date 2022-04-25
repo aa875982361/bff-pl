@@ -53,8 +53,15 @@ import { handleStickPackage } from '../utils/buffSplit';
   * @returns 
   */
  function handleOneDataPackages(data: Buffer, socket: Socket, callback: (requestBody: RequestBody) => ResponseBody): void{
-     // 解密数据
-     const result = decodeBuff(data)
+    let result 
+    try {
+        // 解密数据
+        result = decodeBuff(data)
+     } catch (error) {
+        console.log("反序列化buff失败", error);
+        return 
+     }
+     
      // 区分是请求，还是返回
      if(result.requestType === RequsetType.REQUEST){
          // 客户端的请求 
@@ -63,7 +70,7 @@ import { handleStickPackage } from '../utils/buffSplit';
              return
          }
          // 否则处理方法
-         console.log('server receive data', result);
+         console.log('server receive data', result.requestId);
          const resData = callback(result.body)
          // 构建返回帧
          const responResultBuff = encodeBuff({
