@@ -1,4 +1,4 @@
-tsc
+npx tsc
 NAME=${1:-bff-pl};
 BASE_SERVICE_NAME=$NAME-base-service
 npx pm2 describe $NAME > /dev/null
