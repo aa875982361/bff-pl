@@ -7,13 +7,13 @@ const childProcess = require("child_process")
 
 
 let url = "http://127.0.0.1:8081/order/add"
-let maxNum = 2500
+let maxNum = 2000
 let successNum = 0
 let failNum = 0
 let successList: number[] = []
 let failList: number[] = []
 
-function test(index: number){
+function testByRequest(index: number): Promise<string>{
     // 发出请求
     // console.log("开始发送请求", url);
     return new Promise((resolve, reject) => {
@@ -80,19 +80,14 @@ function testByCurl(index: number){
                 }else{
                     successNum++
                     successList.push(index)
-                    // console.log("执行curl成功");
+                    console.log("执行curl成功", stdout, stderr);
                 }
                 resolve("")
             })
-            curlCommand.on("error", (err: any) => {
-                console.log("curlCommand error", err);
-                
-                resolve("")
-            })
             curlCommand.on("close", (err: any) => {
-                console.log("curlCommand close", err);
+                // console.log("curlCommand close", err);
                 
-                resolve("")
+                // resolve("")
             })
         } catch (error) {
             console.log("exec 执行失败", error);
