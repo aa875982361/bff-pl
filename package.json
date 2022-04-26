@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "ts-node ./test/cliendSendReq.ts",
+    "pm2 test": "tsc && pm2 start ./dist/cliendSendReq.js --name cliendSendReq",
     "baseServiceRpc": "tsc && pm2 start ./dist/baseServiceRpc/index.js --name baseServiceRpc",
     "bffServiceRpc": "tsc && pm2 start ./dist/bffServiceRpc/index.js --name bffServiceRpc",
     "baseService": "node ./baseService/index.js",
     "bffService": "node ./bffService/index.js",
     "start": "npm run baseServiceRpc && npm run bffServiceRpc",
-    "restart": "tsc && pm2 restart baseServiceRpc && pm2 restart bffServiceRpc"
+    "restart": "./start.sh"
   },
   "keywords": [],
   "author": "",
