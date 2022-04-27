@@ -62,7 +62,7 @@ app.post('/order/add', async function(req, res) {
 });
 
 app.listen(port, () => {
-    console.log("开始监听", port);
+    console.log("bff服务开始监听", port);
 })
 
  
