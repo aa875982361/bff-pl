@@ -7,7 +7,7 @@ const childProcess = require("child_process")
 
 
 let url = "http://127.0.0.1:8081/order/add"
-let maxNum = 2000
+let maxNum = 1000
 let successNum = 0
 let failNum = 0
 let successList: number[] = []
@@ -116,6 +116,7 @@ function mainTest(): void{
         console.log("time", currentTime - preTime);
 
         // mainTest()
+        setTimeout(mainTest, 5000)
     })
 }
 mainTest()
