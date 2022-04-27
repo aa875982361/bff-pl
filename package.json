@@ -4,8 +4,8 @@
   "description": "## 项目介绍 本项目是为了预演bff的框架，探究bff在实际项目中的可行性。",
   "main": "index.js",
   "scripts": {
-    "test": "ts-node ./test/cliendSendReq.ts",
-    "pm2 test": "tsc && pm2 start ./dist/cliendSendReq.js --name cliendSendReq",
+    "test": "ts-node ./src/test/cliendSendReq.ts",
+    "pm2test": "tsc && pm2 start ./dist/test/cliendSendReq.js --name cliendSendReq",
     "baseServiceRpc": "tsc && pm2 start ./dist/baseServiceRpc/index.js --name baseServiceRpc",
     "bffServiceRpc": "tsc && pm2 start ./dist/bffServiceRpc/index.js --name bffServiceRpc",
     "baseService": "node ./baseService/index.js",
